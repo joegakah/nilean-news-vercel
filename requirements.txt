@@ -2,3 +2,5 @@ eventregistry
 beautifulsoup4
 requests
 markdownify
+cloudscraper
+cfscrape

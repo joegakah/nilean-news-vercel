@@ -3,7 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 from markdownify import MarkdownConverter
 
-url = 'https://www.radiotamazuj.org/en/news'
+url = 'https://www.eyeradio.org/category/news/'
 
 def get_article_data(article_url):
     
@@ -12,7 +12,7 @@ def get_article_data(article_url):
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        title = soup.find('h1', class_='entry-title').get_text(strip=True)
+        title = soup.find('h1', class_='title-it').get_text(strip=True)
         date = soup.find('span', class_='posts-date').get_text(strip=True)
         category = soup.find('a', rel='category tag').get_text(strip=True)
         content = soup.find('div', class_='entry-content')
@@ -39,9 +39,9 @@ def get_articles(url):
         
         for article in articles:
             article_url = article.find('a', class_='em-figure-link')['href']
-            title = article.find('h3', class_='article-title-2').get_text(strip=True)
-            image = article.find('img', class_='wp-post-image')['src']
-            date = article.find('span', class_='posts-date').get_text(strip=True)
+            title = article.find('h3', class_='cat-title-4').get_text(strip=True)
+            image = article.find('div', class_='featured-pic').get_attribute_list('src')[0]
+            description = article.find('div', class_='featured-content').get_text(strip=True)
 
             article_data = get_article_data(article_url)
 
@@ -50,11 +50,11 @@ def get_articles(url):
                 'author': '',
                 'url': article_url,
                 'imageUrl': image,
-                'description': '',
+                'description': description,
                 'content': article_data['content'],
                 'publishedAt': date,
                 'category': article_data['category'],
-                'source': 'radiotamazuj.org'
+                'source': 'eyeradio.org'
             }
             all_articles = []
 
