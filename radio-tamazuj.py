@@ -37,6 +37,8 @@ def get_articles(url):
         
         articles = soup.find_all('div', class_='spotlight-post-1')
         
+        all_articles = []
+
         for article in articles:
             article_url = article.find('a', class_='em-figure-link')['href']
             title = article.find('h3', class_='article-title-2').get_text(strip=True)
@@ -56,32 +58,11 @@ def get_articles(url):
                 'category': article_data['category'],
                 'source': 'radiotamazuj.org'
             }
-            all_articles = []
+            
+            all_articles.append(the_article)
 
-            for article in articles:
-                article_url = article.find('a', class_='em-figure-link')['href']
-                title = article.find('h3', class_='article-title-2').get_text(strip=True)
-                image = article.find('img', class_='wp-post-image')['src']
-                date = article.find('span', class_='posts-date').get_text(strip=True)
-
-                article_data = get_article_data(article_url)
-
-                the_article = {
-                'title': title,
-                'author': '',
-                'url': article_url,
-                'imageUrl': image,
-                'description': '',
-                'content': article_data['content'],
-                'publishedAt': date,
-                'category': article_data['category'],
-                'source': 'radiotamazuj.org'
-                }
-
-                all_articles.append(the_article)
-
-            with open('all_articles.json', 'w') as f:
-                json.dump(all_articles, f, indent=4)
+        with open('radiotamazuj_articles.json', 'w') as f:
+            json.dump(all_articles, f, indent=4)
         
     else:
         return "Error: Unable to retrieve article links"
