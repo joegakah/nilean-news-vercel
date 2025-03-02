@@ -82,6 +82,8 @@ def get_articles(url):
         
         articles = soup.find_all('div', class_='more-cat')
         
+        all_articles = []
+        
         for article in articles:
             article_url = article.find('div', class_='more-cat-title').find('a')['href']
             title = article.find('h1', class_='cat-title-4').get_text(strip=True)
@@ -102,11 +104,10 @@ def get_articles(url):
                 'source': 'eyeradio.org'
             }
             
-            all_articles = []
             all_articles.append(the_article)
 
-            with open('eyeradio_articles.json', 'w') as f:
-                json.dump(all_articles, f, indent=4)
+        with open('eyeradio_articles.json', 'w') as f:
+            json.dump(all_articles, f, indent=4)
         
     else:
         return "Error: Unable to retrieve article links"
