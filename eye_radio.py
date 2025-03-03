@@ -21,16 +21,16 @@ def extract_info(text):
 
 def convert_to_timestamp(publishedAt):
     now = datetime.now()
-    if "hours" in publishedAt:
-        hours = int(publishedAt.split(" hours")[0])
+    if "hour" in publishedAt:
+        hours = int(publishedAt.split(" hour")[0])
         timestamp = now - timedelta(hours=hours)
 
-    elif "mins" in publishedAt:
-        minutes = int(publishedAt.split(" mins")[0])
+    elif "min" in publishedAt:
+        minutes = int(publishedAt.split(" min")[0])
         timestamp = now - timedelta(minutes=minutes)
 
-    elif "days" in publishedAt:
-        days = int(publishedAt.split(" days")[0])
+    elif "day" in publishedAt:
+        days = int(publishedAt.split(" day")[0])
         timestamp = now - timedelta(days=days)
 
     else:
@@ -54,7 +54,6 @@ def get_article_data(article_url):
 
         content = soup.find('div', class_='article-pic').contents
         content.remove(soup.find('div', class_='top-article-pic'))
-        content.remove(soup.find('p', class_='caption'))
         content.remove(soup.find('div', class_='social-share-3'))
         content.remove(soup.find('div', class_='previous-post'))
         

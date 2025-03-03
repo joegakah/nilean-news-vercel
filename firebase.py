@@ -17,6 +17,6 @@ def add_article(article: dict):
 def check_article(article_url: str):
   articles = articles_ref.stream()
   for doc in articles:
-    if doc.to_dict()['article_url'] == article_url:
+    if doc.to_dict()['url'] == article_url:
       return True
   return False
