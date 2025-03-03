@@ -5,6 +5,8 @@ from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 from markdownify import MarkdownConverter
 
+import translate
+
 url = 'https://www.eyeradio.org/category/news/'
 
 def extract_info(text):
@@ -19,22 +21,22 @@ def extract_info(text):
         return None, None
 
 
-def convert_to_timestamp(published):
+def convert_to_timestamp(publishedAt):
     now = datetime.now()
-    if "hours" in published:
-        hours = int(published.split(" hours")[0])
+    if "hours" in publishedAt:
+        hours = int(publishedAt.split(" hours")[0])
         timestamp = now - timedelta(hours=hours)
 
-    elif "mins" in published:
-        minutes = int(published.split(" mins")[0])
+    elif "mins" in publishedAt:
+        minutes = int(publishedAt.split(" mins")[0])
         timestamp = now - timedelta(minutes=minutes)
 
-    elif "days" in published:
-        days = int(published.split(" days")[0])
+    elif "days" in publishedAt:
+        days = int(publishedAt.split(" days")[0])
         timestamp = now - timedelta(days=days)
 
     else:
-        date_object = datetime.strptime(published, "%B %d, %Y")
+        date_object = datetime.strptime(publishedAt, "%B %d, %Y")
         timestamp = date_object.timestamp()
    
     return timestamp
@@ -62,10 +64,12 @@ def get_article_data(article_url):
 
         converter = MarkdownConverter()
         content_md = converter.convert_soup(content_soup)
+
+        translated_content = translate.translate_to_ssl(content_md)
         
         return {
             'title': title,
-            'content': content_md,
+            'content': translated_content,
             'date': str(date),
             'category': category,
             'author': author,

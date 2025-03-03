@@ -2,6 +2,7 @@ import json
 import requests
 from bs4 import BeautifulSoup
 from markdownify import MarkdownConverter
+import translate
 
 url = 'https://www.radiotamazuj.org/en/news'
 
@@ -19,9 +20,11 @@ def get_article_data(article_url):
         converter = MarkdownConverter()
         content_md = converter.convert_soup(content)
         
+        translated_content = translate.translate_to_ssl(content_md)
+        
         return {
             'title': title,
-            'content': content_md,
+            'content': translated_content,
             'date': date,
             'category': category
         }
