@@ -8,8 +8,15 @@ firebase_admin.initialize_app(cred)
 
 db = firestore.client()
 
-users_ref = db.collection('users')
-docs = users_ref.stream()
+articles_ref = db.collection('articles')
 
-for doc in docs:
-  print(f'{doc.id} => {doc.to_dict()}')
+def add_article(article: dict):
+  doc_ref = articles_ref.document()
+  doc_ref.set(article)
+
+def check_article(article_url: str):
+  articles = articles_ref.stream()
+  for doc in articles:
+    if doc.to_dict()['article_url'] == article_url:
+      return True
+  return False
