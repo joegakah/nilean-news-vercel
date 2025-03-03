@@ -4,8 +4,6 @@ from bs4 import BeautifulSoup
 from markdownify import MarkdownConverter
 import translate
 
-url = 'https://www.radiotamazuj.org/en/news'
-
 def get_article_data(article_url):
     
     response = requests.get(article_url)
@@ -32,7 +30,9 @@ def get_article_data(article_url):
     else:
         return "Error: Unable to retrieve article data"
 
-def get_articles(url):
+def get_articles():
+    url = 'https://www.radiotamazuj.org/en/news'
+    
     response = requests.get(url)
     
     if response.status_code == 200:
@@ -64,10 +64,8 @@ def get_articles(url):
             
             all_articles.append(the_article)
 
-        with open('radiotamazuj_articles.json', 'w') as f:
-            json.dump(all_articles, f, indent=4)
+        return all_articles
         
     else:
         return "Error: Unable to retrieve article links"
     
-get_articles(url)

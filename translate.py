@@ -24,6 +24,3 @@ def translate_to_ssl(text):
     'nus': nuer.json()['translated_text'],
     'din': din.json()['translated_text']
   }
-
-if __name__ == '__main__':
-  print(translate_to_ssl('Hello, how are you?'))

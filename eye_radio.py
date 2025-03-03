@@ -7,8 +7,6 @@ from markdownify import MarkdownConverter
 
 import translate
 
-url = 'https://www.eyeradio.org/category/news/'
-
 def extract_info(text):
     pattern = r"Author: (.*) \|  Published: (.*)"
     match = re.match(pattern, text)
@@ -78,7 +76,8 @@ def get_article_data(article_url):
     else:
         return "Error: Unable to retrieve article data"
 
-def get_articles(url):
+def get_articles(): 
+    url = 'https://www.eyeradio.org/category/news/'
     response = requests.get(url)
     
     if response.status_code == 200:
@@ -110,10 +109,8 @@ def get_articles(url):
             
             all_articles.append(the_article)
 
-        with open('eyeradio_articles.json', 'w') as f:
-            json.dump(all_articles, f, indent=4)
+        return all_articles
         
     else:
         return "Error: Unable to retrieve article links"
     
-get_articles(url)
