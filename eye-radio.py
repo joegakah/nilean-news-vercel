@@ -25,8 +25,8 @@ def convert_to_timestamp(published):
         hours = int(published.split(" hours")[0])
         timestamp = now - timedelta(hours=hours)
 
-    elif "minutes" in published:
-        minutes = int(published.split(" minutes")[0])
+    elif "mins" in published:
+        minutes = int(published.split(" mins")[0])
         timestamp = now - timedelta(minutes=minutes)
 
     elif "days" in published:
