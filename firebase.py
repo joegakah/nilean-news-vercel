@@ -20,3 +20,8 @@ def check_article(article_url: str):
     if doc.to_dict()['url'] == article_url:
       return True
   return False
+
+def add_to_breaking_news():
+  articles = articles_ref.limit(5).stream()
+  for doc in articles:
+    db.collection('breaking_news').document(doc.id).set(doc.to_dict())
