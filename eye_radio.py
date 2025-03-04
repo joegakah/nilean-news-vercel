@@ -35,8 +35,8 @@ def convert_to_timestamp(publishedAt):
 
     else:
         date_object = datetime.strptime(publishedAt, "%B %d, %Y")
-        timestamp = date_object.timestamp()
-   
+        timestamp = date_object.strftime("%Y-%m-%d %H:%M:%S.%f")
+
     return timestamp
 
 
@@ -112,4 +112,3 @@ def get_articles():
         
     else:
         return "Error: Unable to retrieve article links"
-    
