@@ -1,4 +1,5 @@
 import firebase_admin
+import random
 
 from firebase_admin import credentials
 from firebase_admin import firestore
@@ -22,6 +23,19 @@ def check_article(article_url: str):
   return False
 
 def add_to_breaking_news():
-  articles = articles_ref.limit(5).stream()
-  for doc in articles:
+  articles = articles_ref.stream()
+  random_articles = random.sample(list(articles), 5)
+  for doc in random_articles:
     db.collection('breaking_news').document(doc.id).set(doc.to_dict())
+
+def delete_articles():
+  articles = articles_ref.stream()
+  for doc in articles:
+    doc.reference.delete()
+
+def delete_breaking_news():
+  breaking_news = db.collection('breaking_news').stream()
+  for doc in breaking_news:
+    doc.reference.delete()
+
+add_to_breaking_news()

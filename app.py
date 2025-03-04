@@ -8,8 +8,8 @@ def app():
   for article in articles:
     if not firebase.check_article(article['url']):
       firebase.add_article(article)
-      print(f"Added {article['title'] + ' - ' + article['source']} to Firestore")
+      print(f"Added {article['title']['en'] + ' - ' + article['source']} to Firestore")
     else:
-      print(f"{article['title'] + ' - ' + article['source']} already exists in Firestore")
+      print(f"{article['title']['en'] + ' - ' + article['source']} already exists in Firestore")
 
 app()

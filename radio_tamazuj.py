@@ -42,6 +42,7 @@ def get_articles():
         articles = soup.find_all('div', class_='spotlight-post-1')
         
         all_articles = []
+        print('Getting articles from Radio Tamazuj...')
 
         for article in articles:
             article_url = article.find('a', class_='em-figure-link')['href']
@@ -52,10 +53,13 @@ def get_articles():
             date_object = datetime.strptime(date, "%B %d, %Y")
             timestamp = date_object.strftime("%Y-%m-%d %H:%M:%S.%f")
 
+            print(f'Getting article:{title} data from {article_url}...')
+
             article_data = get_article_data(article_url)
+            translated_title = translate.translate_to_ssl(title)
 
             the_article = {
-                'title': title,
+                'title': translated_title,
                 'author': 'chief editor',
                 'url': article_url,
                 'imageUrl': image,
