@@ -52,8 +52,6 @@ def get_articles():
             date_object = datetime.strptime(date, "%B %d, %Y")
             timestamp = date_object.strftime("%Y-%m-%d %H:%M:%S.%f")
 
-            print(timestamp)
-
             article_data = get_article_data(article_url)
 
             the_article = {
