@@ -1,8 +1,7 @@
 import firebase_admin
 import random
 
-from firebase_admin import credentials
-from firebase_admin import firestore
+from firebase_admin import credentials, firestore, messaging
 
 cred = credentials.Certificate('buai-92c2a-160af8a5b9d7.json')
 firebase_admin.initialize_app(cred)
@@ -10,6 +9,11 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 articles_ref = db.collection('articles')
+
+def list_articles():
+  articles = articles_ref.stream() 
+  articles = list(articles)
+  print(f'title: "{articles[0].to_dict()['title']['en']}", source: "{articles[0].to_dict()['source']}", url: "{articles[0].to_dict()['url']}", "description", "{articles[0].to_dict()['description']}"')
 
 def add_article(article: dict):
   doc_ref = articles_ref.document()
@@ -38,4 +42,36 @@ def delete_breaking_news():
   for doc in breaking_news:
     doc.reference.delete()
 
-add_to_breaking_news()
+
+def get_last_article_id():
+    articles_ref = db.collection('articles')
+    query = articles_ref.order_by('publishedAt', direction=firestore.Query.DESCENDING).limit(1)
+    results = query.get()
+    if results:
+        return results[0].to_dict()
+    else:
+        return None
+
+def send_notification():
+    article_data = get_last_article_id()
+
+    print(article_data['title']['en'])
+
+    notification = messaging.Notification(
+      title=article_data['title']['en'],
+      body=article_data['description'],
+    )
+    data = {
+      'articleId': article_data['imageUrl'],
+      'url': article_data['url'],
+    }
+    message = messaging.Message(
+        notification=notification,
+        data=data,
+        topic='new-articles',
+    )
+    try:
+        response = messaging.send(message)
+        print('Notification sent successfully:', response)
+    except Exception as e:
+        print('Error sending notification:', e)

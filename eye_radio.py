@@ -1,4 +1,4 @@
-import json
+import firebase
 import re
 import requests
 from datetime import datetime, timedelta
@@ -17,7 +17,6 @@ def extract_info(text):
         return author, publishedAt
     else:
         return None, None
-
 
 def convert_to_timestamp(publishedAt):
     now = datetime.now()
@@ -38,7 +37,6 @@ def convert_to_timestamp(publishedAt):
         timestamp = date_object.strftime("%Y-%m-%d %H:%M:%S.%f")
 
     return timestamp
-
 
 def get_article_data(article_url):    
     response = requests.get(article_url)
@@ -74,6 +72,30 @@ def get_article_data(article_url):
     
     else:
         return "Error: Unable to retrieve article data"
+    
+def get_article(article):
+    article_url = article.find('div', class_='more-cat-title').find('a')['href']
+    title = article.find('h1', class_='cat-title-4').get_text(strip=True)
+    image = article.find('div', class_='more-cat-pic').find('img').get_attribute_list('src')[0]
+    description = article.find('p', class_='more-cat-copy').get_text(strip=True)
+
+    print(f'Getting article:{title} data from {article_url}...')
+
+    translated_title = translate.translate_to_ssl(title)
+    
+    article_data = get_article_data(article_url)
+
+    return {
+        'title': translated_title,
+        'author': article_data['author'],
+        'url': article_url,
+        'imageUrl': image,
+        'description': description,
+        'content': article_data['content'],
+        'publishedAt': article_data['date'],
+        'category': article_data['category'],
+        'source': 'eyeradio.org'
+    }
 
 def get_articles(): 
     url = 'https://www.eyeradio.org/category/news/'
@@ -88,32 +110,26 @@ def get_articles():
         print('Getting articles from Eye Radio...')
         
         for article in articles:
-            article_url = article.find('div', class_='more-cat-title').find('a')['href']
-            title = article.find('h1', class_='cat-title-4').get_text(strip=True)
-            image = article.find('div', class_='more-cat-pic').find('img').get_attribute_list('src')[0]
-            description = article.find('p', class_='more-cat-copy').get_text(strip=True)
-
-            print(f'Getting article:{title} data from {article_url}...')
-
-            translated_title = translate.translate_to_ssl(title)
-            
-            article_data = get_article_data(article_url)
-
-            the_article = {
-                'title': translated_title,
-                'author': article_data['author'],
-                'url': article_url,
-                'imageUrl': image,
-                'description': description,
-                'content': article_data['content'],
-                'publishedAt': article_data['date'],
-                'category': article_data['category'],
-                'source': 'eyeradio.org'
-            }
-            
+            the_article = get_article(article)
             all_articles.append(the_article)
 
         return all_articles
         
     else:
         return "Error: Unable to retrieve article links"
+
+
+def addlatestArtcle():
+    url = 'https://www.eyeradio.org/category/news/'
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        print('Getting latest article from Eye Radio...')
+        
+        articles = soup.find_all('div', class_='more-cat')
+        article = get_article(articles[0])
+
+        if not firebase.check_article(article['url']):
+            print(f"Adding {article['title']['en'] + ' - ' + article['source']} to Firestore")
+            firebase.add_article(article)
