@@ -6,3 +6,5 @@ cloudscraper
 cfscrape
 dateparser
 firebase_admin
+fastapi 
+uvicorn
