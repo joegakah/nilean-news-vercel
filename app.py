@@ -31,7 +31,7 @@ def home():
   return {"message": "Welcome to the Web Scraping API"}
 
 @app.get("/scrape")
-def scrape(url: str):
+def scrape():
   try:
       scrape_website()
       return {"message": "Scraping completed successfully"}
