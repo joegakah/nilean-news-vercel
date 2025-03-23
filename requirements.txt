@@ -8,5 +8,4 @@ dateparser
 firebase_admin
 fastapi 
 uvicorn
-threading
 schedule
