@@ -109,7 +109,7 @@ def get_articles():
         all_articles = []
         print('Getting articles from Eye Radio...')
         
-        for article in articles:
+        for article in articles[0:5]:
             the_article = get_article(article)
             all_articles.append(the_article)
 

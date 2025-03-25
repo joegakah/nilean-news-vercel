@@ -13,7 +13,6 @@ articles_ref = db.collection('articles')
 def list_articles():
   articles = articles_ref.stream() 
   articles = list(articles)
-  print(f'title: "{articles[0].to_dict()['title']['en']}", source: "{articles[0].to_dict()['source']}", url: "{articles[0].to_dict()['url']}", "description", "{articles[0].to_dict()['description']}"')
 
 def add_article(article: dict):
   doc_ref = articles_ref.document()
