@@ -44,7 +44,7 @@ def get_articles():
         all_articles = []
         print('Getting articles from Radio Tamazuj...')
 
-        for article in articles[0:5]:
+        for article in articles:
             article_url = article.find('a', class_='em-figure-link')['href']
             title = article.find('h3', class_='article-title-2').get_text(strip=True)
             image = article.find('img', class_='wp-post-image')['src']

@@ -19,8 +19,8 @@ def scrape_website():
       print(f"{article['title']['en'] + ' - ' + article['source']} already exists in Firestore")
    
 def schedule_scraping():
-  schedule.every(10).seconds.do(scrape_website)
-  print("Scheduled scraping every 10 seconds")
+  schedule.every(10).minutes.do(scrape_website)
+  print("Scheduled scraping every 10 minutes")
   while True:
       schedule.run_pending()
       time.sleep(1)
