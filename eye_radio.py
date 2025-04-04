@@ -110,8 +110,9 @@ def get_articles():
         print('Getting articles from Eye Radio...')
         
         for article in articles:
+            article_url = article.find('div', class_='more-cat-title').find('a')['href']
+            
             try:
-                article_url = article.find('div', class_='more-cat-title').find('a')['href']
                 if not firebase.check_article(article_url):
                     the_article = get_article(article)
                     firebase.add_article(the_article)
@@ -119,7 +120,7 @@ def get_articles():
                 else:
                     print(f"{article['title']['en'] + ' - ' + article['source']} already exists in Firestore")
             except:
-                print(f"Error processing article: {article}")
+                print(f"Error processing article: {article_url}")
             all_articles.append(the_article)
         
     else:

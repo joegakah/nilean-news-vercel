@@ -45,8 +45,9 @@ def get_articles():
         print('Getting articles from Radio Tamazuj...')
 
         for article in articles:
+            article_url = article.find('div', class_='more-cat-title').find('a')['href']
+            
             try:
-                article_url = article.find('div', class_='more-cat-title').find('a')['href']
                 print(f'Getting article:{article_url}...')
 
                 if not firebase.check_article(article_url):
