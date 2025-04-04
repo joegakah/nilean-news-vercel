@@ -9,14 +9,8 @@ from fastapi import FastAPI, HTTPException
 app = FastAPI()
 
 def scrape_website():
-  articles =  radio_tamazuj.get_articles() + eye_radio.get_articles()
-
-  for article in articles:
-    if not firebase.check_article(article['url']):
-      firebase.add_article(article)
-      print(f"Added {article['title']['en'] + ' - ' + article['source']} to Firestore")
-    else:
-      print(f"{article['title']['en'] + ' - ' + article['source']} already exists in Firestore")
+  radio_tamazuj.get_articles()
+  eye_radio.get_articles()
    
 def schedule_scraping():
   schedule.every(10).minutes.do(scrape_website)
