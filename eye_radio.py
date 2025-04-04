@@ -119,7 +119,7 @@ def get_articles():
                 else:
                     print(f"{article['title']['en'] + ' - ' + article['source']} already exists in Firestore")
             except:
-                print('Error')
+                print(f"Error processing article: {article}")
             all_articles.append(the_article)
         
     else:
