@@ -110,10 +110,17 @@ def get_articles():
         print('Getting articles from Eye Radio...')
         
         for article in articles:
-            the_article = get_article(article)
+            try:
+                article_url = article.find('div', class_='more-cat-title').find('a')['href']
+                if not firebase.check_article(article_url):
+                    the_article = get_article(article)
+                    firebase.add_article(the_article)
+                    print(f"Added {article['title']['en'] + ' - ' + article['source']} to Firestore")
+                else:
+                    print(f"{article['title']['en'] + ' - ' + article['source']} already exists in Firestore")
+            except:
+                print('Error')
             all_articles.append(the_article)
-
-        return all_articles
         
     else:
         return "Error: Unable to retrieve article links"
