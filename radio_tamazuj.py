@@ -45,8 +45,8 @@ def get_articles():
         print('Getting articles from Radio Tamazuj...')
 
         for article in articles:
-            article_url = article.find('div', class_='more-cat-title').find('a')['href']
-            
+            article_url = article.find('a', class_='em-figure-link')['href']
+                        
             try:
                 print(f'Getting article:{article_url}...')
 
