@@ -13,7 +13,7 @@ def scrape_website():
   eye_radio.get_articles()
    
 def schedule_scraping():
-  schedule.every(10).minutes.do(scrape_website)
+  schedule.every(30).minutes.do(scrape_website)
   print("Scheduled scraping every 10 minutes")
   while True:
       schedule.run_pending()
