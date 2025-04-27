@@ -73,11 +73,12 @@ def get_articles():
                     }
 
                     firebase.add_article(the_article)
-                    print(f"Added {article['title']['en'] + ' - ' + article['source']} to Firestore")
+                    print(f"Added {article_url} to Firestore")
+                    
                 else:
-                    print(f"{article['title']['en'] + ' - ' + article['source']} already exists in Firestore")
-            except:
-                print(f"Error getting article data from {article_url} ")
+                    print(f"{article_url} already exists in Firestore")
+            except Exception as e:
+                print(f"Error processing article {article_url}: {e}")
 
 
         return all_articles

@@ -106,7 +106,6 @@ def get_articles():
         
         articles = soup.find_all('div', class_='more-cat')
         
-        all_articles = []
         print('Getting articles from Eye Radio...')
         
         for article in articles:
@@ -116,12 +115,11 @@ def get_articles():
                 if not firebase.check_article(article_url):
                     the_article = get_article(article)
                     firebase.add_article(the_article)
-                    print(f"Added {article['title']['en'] + ' - ' + article['source']} to Firestore")
+                    print(f"Added {article_url} to Firestore")
                 else:
-                    print(f"{article['title']['en'] + ' - ' + article['source']} already exists in Firestore")
-            except:
-                print(f"Error processing article: {article_url}")
-            all_articles.append(the_article)
+                    print(f"Article {article_url} already exists in Firestore")
+            except Exception as e:
+                print(f"Error processing article: {article_url}. Error: {e}")
         
     else:
         return "Error: Unable to retrieve article links"
