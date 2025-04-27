@@ -46,7 +46,7 @@ def get_articles():
 
         for article in articles:
             article_url = article.find('a', class_='em-figure-link')['href']
-                        
+
             try:
                 print(f'Getting article:{article_url}...')
 
@@ -77,10 +77,8 @@ def get_articles():
                 else:
                     print(f"{article['title']['en'] + ' - ' + article['source']} already exists in Firestore")
             except:
-                print(f"Error getting article data from {article_url}")
+                print(f"Error getting article data from {article_url} ")
 
-            
-            all_articles.append(the_article)
 
         return all_articles
         
