@@ -79,8 +79,6 @@ def get_article(article):
     image = article.find('div', class_='more-cat-pic').find('img').get_attribute_list('src')[0]
     description = article.find('p', class_='more-cat-copy').get_text(strip=True)
 
-    print(f'Getting article:{title} data from {article_url}...')
-
     translated_title = translate.translate_to_ssl(title)
     
     article_data = get_article_data(article_url)

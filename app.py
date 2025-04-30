@@ -1,4 +1,3 @@
-import firebase
 import radio_tamazuj
 import eye_radio
 import threading

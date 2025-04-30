@@ -11,7 +11,7 @@ db = firestore.client()
 articles_ref = db.collection('articles')
 
 def list_articles():
-  articles = articles_ref.stream() 
+  articles = articles_ref.stream()
   articles = list(articles)
 
 def add_article(article: dict):
@@ -40,6 +40,27 @@ def delete_breaking_news():
   breaking_news = db.collection('breaking_news').stream()
   for doc in breaking_news:
     doc.reference.delete()
+
+def delete_article(article_id: str):
+  doc_ref = articles_ref.document(article_id)
+  doc_ref.delete()
+
+def delete_duplicates():
+  print("Deleting duplicate articles from Firestore...")
+
+  articles = articles_ref.order_by('publishedAt', direction=firestore.Query.DESCENDING).limit(25)
+  articles = list(articles.stream())
+
+  unique_urls = set()
+    
+  for article in articles:
+    url = article.to_dict()['url']
+    
+    if url in unique_urls:
+      delete_article(article.id)
+      print(f'Deleted Duplicate article: {url}')
+    else:
+      unique_urls.add(url)
 
 
 def get_last_article_id():
