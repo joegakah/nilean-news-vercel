@@ -57,6 +57,8 @@ def get_articles():
                     date_object = datetime.strptime(date, "%B %d, %Y")
                     timestamp = date_object.strftime("%Y-%m-%d %H:%M:%S.%f")
 
+                    print(title, image, date, timestamp)
+
                     article_data = get_article_data(article_url)
                     translated_title = translate.translate_to_ssl(title)
         
@@ -78,6 +80,7 @@ def get_articles():
                 else:
                     print(f"{article_url} already exists in Firestore")
             except Exception as e:
+                print(e)
                 print(f"Error processing article {article_url}: {e}")
 
 

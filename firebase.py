@@ -9,6 +9,8 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 articles_ref = db.collection('articles')
+news_titles_ref = db.collection('news_titles')
+news_content_ref = db.collection("news_content")
 
 def list_articles():
   articles = articles_ref.stream()
@@ -19,7 +21,10 @@ def add_article(article: dict):
   doc_ref.set(article)
 
 def check_article(article_url: str):
-  articles = articles_ref.stream()
+  print("Checking Article ...")
+  articles = articles_ref.order_by('publishedAt', direction=firestore.Query.DESCENDING).limit(10)
+  articles = list(articles.stream())
+
   for doc in articles:
     if doc.to_dict()['url'] == article_url:
       return True
