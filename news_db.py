@@ -29,3 +29,18 @@ def check_article(article_url: str):
       return True
     
   return False
+
+def delete_news(news_id: str):
+  doc = news_ref.document(news_id)
+  doc_content = news_content_ref.document(news_id)
+  doc.delete()
+  doc_content.delete()
+
+def delete_all_news():
+  news = news_ref.stream()
+  for doc in news:
+    doc.reference.delete()
+  
+  news_content = news_content_ref.stream()
+  for doc in news_content:
+    doc.reference.delete()
