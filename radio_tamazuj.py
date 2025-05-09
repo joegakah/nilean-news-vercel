@@ -6,7 +6,6 @@ import translate
 from datetime import datetime, timedelta
 
 def get_article_data(article_url):
-    print("Getting Article Data...")
     response = requests.get(article_url)
 
     if response.status_code == 200:
@@ -89,11 +88,11 @@ def get_articles():
 
                     news_db.add_news_content(the_article_content)
 
-                    print(f"Added {article_url} to Firestore")
+                    print(f"Added to Firestore")
                     
                 else:
-                    print(f"{article_url} already exists in Firestore")
-                    
+                    print(f"Article already exists in Firestore")
+
             except Exception as e:
                 print(e)
                 print(f"Error processing article {article_url}: {e}")

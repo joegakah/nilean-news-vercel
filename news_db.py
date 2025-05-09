@@ -17,7 +17,7 @@ def add_news(news: dict):
   return doc_ref.id
 
 def add_news_content(content: dict):
-  doc_ref = news_content_ref.document()
+  doc_ref = news_content_ref.document(content['news_id'])
   doc_ref.set(content)
 
 def check_article(article_url: str):

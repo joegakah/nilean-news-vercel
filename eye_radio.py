@@ -128,7 +128,7 @@ def get_articles():
             try:
                 if not news_db.check_article(article_url):
                     get_article(article)
-                    print(f"Added Articleto Firestore")
+                    print(f"Added Article to Firestore")
 
                 else:
                     print(f"Article already exists in Firestore")
