@@ -33,7 +33,10 @@ def check_article(article_url: str):
 
   for doc in news:
     if doc.to_dict()['url'] == article_url:
+      print(f'News Article Already Exists')
       return True
+    
+  print("Article Not Found")
   return False
 
 def add_to_breaking_news():
