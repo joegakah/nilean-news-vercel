@@ -8,8 +8,15 @@ from fastapi import FastAPI, HTTPException
 app = FastAPI()
 
 def scrape_website():
-  radio_tamazuj.get_articles()
-  eye_radio.get_articles()
+  threads = []
+  threads.append(threading.Thread(target=radio_tamazuj.get_articles))
+  threads.append(threading.Thread(target=eye_radio.get_articles))
+
+  for thread in threads:
+      thread.start()
+
+  for thread in threads:
+      thread.join()
    
 def schedule_scraping():
   schedule.every(30).minutes.do(scrape_website)
