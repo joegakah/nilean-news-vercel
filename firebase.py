@@ -9,6 +9,8 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 articles_ref = db.collection('articles')
+news_ref = db.collection('news')
+news_content_ref = db.collection("news_content")
 
 def list_articles():
   articles = articles_ref.stream()
@@ -18,11 +20,23 @@ def add_article(article: dict):
   doc_ref = articles_ref.document()
   doc_ref.set(article)
 
+def add_news(news: dict):
+  doc_ref = news_ref.document()
+  doc_ref.set(news)
+  print(doc_ref.id)
+  return doc_ref.id
+
 def check_article(article_url: str):
-  articles = articles_ref.stream()
-  for doc in articles:
+  print("Checking News Article ...")
+  news = news_ref.order_by('publishedAt', direction=firestore.Query.DESCENDING)
+  news = list(news.stream())
+
+  for doc in news:
     if doc.to_dict()['url'] == article_url:
+      print(f'News Article Already Exists')
       return True
+    
+  print("Article Not Found")
   return False
 
 def add_to_breaking_news():

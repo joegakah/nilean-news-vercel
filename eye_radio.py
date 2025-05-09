@@ -1,4 +1,4 @@
-import firebase
+import news_db
 import re
 import requests
 from datetime import datetime, timedelta
@@ -79,22 +79,36 @@ def get_article(article):
     image = article.find('div', class_='more-cat-pic').find('img').get_attribute_list('src')[0]
     description = article.find('p', class_='more-cat-copy').get_text(strip=True)
 
+    print('Translating Article')
     translated_title = translate.translate_to_ssl(title)
     
     article_data = get_article_data(article_url)
-
-    return {
-        'title': translated_title,
+    
+    the_article = {
+        'title_en': translated_title['en'],
+        'title_nus': translated_title['nus'],
+        'title_din': translated_title['din'],
         'author': article_data['author'],
         'url': article_url,
         'imageUrl': image,
         'description': description,
-        'content': article_data['content'],
         'publishedAt': article_data['date'],
         'category': article_data['category'],
         'source': 'eyeradio.org'
     }
 
+    news_id = news_db.add_news(the_article)
+
+    the_article_content = {
+        'news_id': news_id,
+        'content_en': article_data['content']['en'],
+        'content_nus': article_data['content']['nus'],
+        'content_din': article_data['content']['din'],
+        'publishedAt': article_data['date'],
+    }
+
+    news_db.add_news_content(the_article_content)
+                    
 def get_articles(): 
     url = 'https://www.eyeradio.org/category/news/'
     response = requests.get(url)
@@ -109,31 +123,20 @@ def get_articles():
         for article in articles:
             article_url = article.find('div', class_='more-cat-title').find('a')['href']
             
+            print(f'Article:{article_url}...')
+
             try:
-                if not firebase.check_article(article_url):
-                    the_article = get_article(article)
-                    firebase.add_article(the_article)
-                    print(f"Added {article_url} to Firestore")
+                if not news_db.check_article(article_url):
+                    get_article(article)
+                    print(f"Added Article to Firestore")
+
                 else:
-                    print(f"Article {article_url} already exists in Firestore")
+                    print(f"Article already exists in Firestore")
+
             except Exception as e:
                 print(f"Error processing article: {article_url}. Error: {e}")
         
     else:
         return "Error: Unable to retrieve article links"
 
-
-def addlatestArtcle():
-    url = 'https://www.eyeradio.org/category/news/'
-    response = requests.get(url)
-
-    if response.status_code == 200:
-        soup = BeautifulSoup(response.text, 'html.parser')
-        print('Getting latest article from Eye Radio...')
-        
-        articles = soup.find_all('div', class_='more-cat')
-        article = get_article(articles[0])
-
-        if not firebase.check_article(article['url']):
-            print(f"Adding {article['title']['en'] + ' - ' + article['source']} to Firestore")
-            firebase.add_article(article)
+get_articles()
