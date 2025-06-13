@@ -1,5 +1,5 @@
+import random
 import firebase_admin
-
 from firebase_admin import credentials, firestore, messaging
 
 cred = credentials.Certificate('buai-92c2a-160af8a5b9d7.json')
@@ -21,7 +21,7 @@ def add_news_content(content: dict):
   doc_ref.set(content)
 
 def check_article(article_url: str):
-  news = news_ref.order_by('publishedAt', direction=firestore.Query.DESCENDING)
+  news = news_ref.order_by('publishedAt', direction=firestore.Query.DESCENDING).limit(20)
   news = list(news.stream())
 
   for doc in news:
@@ -44,3 +44,9 @@ def delete_all_news():
   news_content = news_content_ref.stream()
   for doc in news_content:
     doc.reference.delete()
+
+def add_articles_to_breaking_news():
+    articles = news_ref.stream()
+    random_articles = random.sample(list(articles), 5)
+    for doc in random_articles:
+        db.collection('breaking_news').document(doc.id).set(doc.to_dict())

@@ -85,27 +85,3 @@ def get_last_article_id():
         return results[0].to_dict()
     else:
         return None
-
-def send_notification():
-    article_data = get_last_article_id()
-
-    print(article_data['title']['en'])
-
-    notification = messaging.Notification(
-      title=article_data['title']['en'],
-      body=article_data['description'],
-    )
-    data = {
-      'articleId': article_data['imageUrl'],
-      'url': article_data['url'],
-    }
-    message = messaging.Message(
-        notification=notification,
-        data=data,
-        topic='new-articles',
-    )
-    try:
-        response = messaging.send(message)
-        print('Notification sent successfully:', response)
-    except Exception as e:
-        print('Error sending notification:', e)
