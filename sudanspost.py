@@ -53,8 +53,8 @@ def get_article(article_url: str, category:str):
     the_article_content = {
       'news_id': news_id,
       'content_en': translated_content['en'],        
-      'content_nus': translated_content['en'],
-      'content_din': translated_content['en'],
+      'content_nus': translated_content['nus'],
+      'content_din': translated_content['din'],
       'publishedAt': timestamp
     }
 

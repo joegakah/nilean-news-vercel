@@ -110,4 +110,3 @@ def get_last_article_id():
     else:
         return None
     
-delete_duplicates()
