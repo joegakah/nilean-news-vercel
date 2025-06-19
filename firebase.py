@@ -8,7 +8,7 @@ firebase_admin.initialize_app(cred)
 
 db = firestore.client()
 
-articles_ref = db.collection('articles')
+articles_ref = db.collection('news_titles')
 news_ref = db.collection('news')
 news_content_ref = db.collection("news_content")
 
@@ -62,19 +62,39 @@ def delete_article(article_id: str):
 def delete_duplicates():
   print("Deleting duplicate articles from Firestore...")
 
-  articles = articles_ref.order_by('publishedAt', direction=firestore.Query.DESCENDING).limit(25)
+  articles = articles_ref.order_by('publishedAt', direction=firestore.Query.DESCENDING)
   articles = list(articles.stream())
 
   unique_urls = set()
     
   for article in articles:
     url = article.to_dict()['url']
+    print(f'Article: {url}...')
     
     if url in unique_urls:
       delete_article(article.id)
       print(f'Deleted Duplicate article: {url}')
     else:
       unique_urls.add(url)
+
+
+def delete_duplicate_news_content():
+  print("Deleting duplicate articles from Firestore...")
+
+  articles = db.collection('news_content').order_by('publishedAt', direction=firestore.Query.DESCENDING)
+  articles = list(articles.stream())
+
+  unique_id = set()
+    
+  for article in articles:
+    url = article.to_dict()['news_id']
+    print(f'Article: {url}...')
+    
+    if id in unique_id:
+      delete_article(article.id)
+      print(f'Deleted Duplicate article: {url}')
+    else:
+      unique_id.add(url)
 
 
 def get_last_article_id():
@@ -85,3 +105,4 @@ def get_last_article_id():
         return results[0].to_dict()
     else:
         return None
+    

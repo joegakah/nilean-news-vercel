@@ -43,7 +43,7 @@ def get_article(article_url: str, category:str):
     content = soup.find('div', class_='content-inner').contents
     content.remove(soup.find('div', class_='sharedaddy'))
 
-    content_soup = BeautifulSoup(''.join(str(item) for item in content), 'html.parser')
+    content_soup = BeautifulSoup(''.join(str(item) for item in content[1:]), 'html.parser')
   
     converter = MarkdownConverter()
     content_md = converter.convert_soup(content_soup)
@@ -69,7 +69,7 @@ def get_articles():
 
     print('Getting articles from Sudan Post...')
 
-    for article in articles[0:2]:
+    for article in articles:
       article_link = article.find('h3', class_='jeg_post_title').find('a')['href']
 
       print(f'Article:{article_link}...')
@@ -87,5 +87,3 @@ def get_articles():
   
     else:
       return "Error: Unable to retrieve article links"
-
-get_articles()
