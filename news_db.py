@@ -21,7 +21,7 @@ def add_news_content(content: dict):
   doc_ref.set(content)
 
 def check_article(article_url: str):
-  news = news_ref.order_by('publishedAt', direction=firestore.Query.DESCENDING).limit(20)
+  news = news_ref.order_by('publishedAt', direction=firestore.Query.DESCENDING).limit(100)
   news = list(news.stream())
 
   for doc in news:
