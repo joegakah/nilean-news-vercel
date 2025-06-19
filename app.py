@@ -9,8 +9,8 @@ app = FastAPI()
 
 def scrape_website():
   threads = []
-  threads.append(threading.Thread(target=radio_tamazuj.get_articles))
   threads.append(threading.Thread(target=eye_radio.get_articles))
+  threads.append(threading.Thread(target=radio_tamazuj.get_articles))
 
   for thread in threads:
       thread.start()

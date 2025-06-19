@@ -56,11 +56,8 @@ def get_articles():
                     date_object = datetime.strptime(date, "%B %d, %Y")
                     timestamp = date_object.strftime("%Y-%m-%d %H:%M:%S.%f")
 
-                    print(title, image, date, timestamp)
-
                     article_data = get_article_data(article_url)
 
-                    print("Translating Article...")
                     translated_title = translate.translate_to_ssl(title)
         
                     the_article = {
