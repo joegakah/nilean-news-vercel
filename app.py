@@ -5,10 +5,13 @@ import schedule
 import time
 from fastapi import FastAPI, HTTPException
 
+import sudanspost
+
 app = FastAPI()
 
 def scrape_website():
   threads = []
+  threads.append(threading.Thread(target=sudanspost.get_articles))
   threads.append(threading.Thread(target=eye_radio.get_articles))
   threads.append(threading.Thread(target=radio_tamazuj.get_articles))
 

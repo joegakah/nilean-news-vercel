@@ -43,7 +43,7 @@ def get_article(article_url: str, category:str):
     content = soup.find('div', class_='content-inner').contents
     content.remove(soup.find('div', class_='sharedaddy'))
 
-    content_soup = BeautifulSoup(''.join(str(item) for item in content[1:]), 'html.parser')
+    content_soup = BeautifulSoup(''.join(str(item) for item in content[2:]), 'html.parser')
   
     converter = MarkdownConverter()
     content_md = converter.convert_soup(content_soup)
