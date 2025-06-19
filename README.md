@@ -29,9 +29,9 @@ This repository contains a web application that scrapes news websites and provid
   ```bash
   pip install -r requirements.txt
   ```
-4. Start the Unicorn server:
+4. Start the Uvicorn server:
   ```bash
-  unicorn app:app
+  uvicorn app:app
   ```
 
 ### Notes
