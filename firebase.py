@@ -59,6 +59,9 @@ def delete_article(article_id: str):
   doc_ref = articles_ref.document(article_id)
   doc_ref.delete()
 
+  doc_ref = news_content_ref.document(article_id)
+  doc_ref.delete()
+
 def delete_duplicates():
   print("Deleting duplicate articles from Firestore...")
 
@@ -87,14 +90,15 @@ def delete_duplicate_news_content():
   unique_id = set()
     
   for article in articles:
-    url = article.to_dict()['news_id']
-    print(f'Article: {url}...')
+    news = article.to_dict()['content_en'][0:30]
+    print(f'Article: {article.id}')
     
-    if id in unique_id:
-      delete_article(article.id)
-      print(f'Deleted Duplicate article: {url}')
+    if news in unique_id:
+      doc_ref = news_content_ref.document(article.id)
+      doc_ref.delete()
+      print(f'Deleted Duplicate article: {article.id}')
     else:
-      unique_id.add(url)
+      unique_id.add(news)
 
 
 def get_last_article_id():
@@ -106,3 +110,4 @@ def get_last_article_id():
     else:
         return None
     
+delete_duplicates()
