@@ -1,11 +1,12 @@
-import news_db
 import re
 import requests
 from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 from markdownify import MarkdownConverter
 
-import translate
+from . import news_db
+from . import translate
+
 
 def extract_info(text):
     pattern = r"Author: (.*) \|  Published: (.*)"

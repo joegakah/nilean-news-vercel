@@ -1,12 +1,12 @@
-import notification
-import radio_tamazuj
-import eye_radio
 import threading
-from fastapi import FastAPI, HTTPException
+from http.client import HTTPException
+from flask import Flask
+from . import notification
+from . import radio_tamazuj
+from . import eye_radio
+from . import sudanspost
 
-import sudanspost
-
-app = FastAPI()
+app = Flask(__name__)
 
 def scrape_website():
   threads = []
@@ -20,11 +20,11 @@ def scrape_website():
   for thread in threads:
       thread.join()
    
-@app.get("/")
+@app.route("/")
 def home():
   return {"message": "Welcome to the Web Scraping API"}
 
-@app.get("/scrape")
+@app.route("/scrape")
 def scrape():
   try:
     threading.Thread(target=scrape_website).start()

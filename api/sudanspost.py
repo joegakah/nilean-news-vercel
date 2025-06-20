@@ -3,8 +3,8 @@ from bs4 import BeautifulSoup
 from markdownify import MarkdownConverter
 from datetime import datetime, timedelta
 
-import news_db
-import translate
+from . import news_db
+from . import translate
 
 response = requests.get('https://www.sudanspost.com/category/news/')
 

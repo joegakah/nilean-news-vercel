@@ -1,6 +1,6 @@
 import requests
 import random
-import news_db
+from . import news_db
 
 def send_notification(title, body, image_url):
   url = 'https://nilean-notifications.onrender.com'
