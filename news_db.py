@@ -1,4 +1,5 @@
 import random
+import datetime
 import firebase_admin
 from firebase_admin import credentials, firestore, messaging
 
@@ -50,3 +51,9 @@ def add_articles_to_breaking_news():
     random_articles = random.sample(list(articles), 5)
     for doc in random_articles:
         db.collection('breaking_news').document(doc.id).set(doc.to_dict())
+
+def get_todays_news():
+    news_query = news_ref.order_by('publishedAt', direction=firestore.Query.DESCENDING).limit(10)
+    news_docs = list(news_query.stream())
+
+    return news_docs

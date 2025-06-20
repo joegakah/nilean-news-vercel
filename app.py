@@ -1,3 +1,4 @@
+import notification
 import radio_tamazuj
 import eye_radio
 import threading
@@ -19,7 +20,6 @@ def scrape_website():
   for thread in threads:
       thread.join()
    
-
 @app.get("/")
 def home():
   return {"message": "Welcome to the Web Scraping API"}
@@ -27,8 +27,15 @@ def home():
 @app.get("/scrape")
 def scrape():
   try:
-      scrape_website()
-      return {"message": "Scraping completed successfully"}
+    threading.Thread(target=scrape_website).start()
+    return {"message": "Scraping completed successfully"}
   except Exception as e:
-      raise HTTPException(status_code=500, detail=str(e))
-
+    raise HTTPException(status_code=500, detail=str(e))
+  
+@app.get("/notify-today-news")
+def notify_today_news():
+  try:
+    notification.send_today_news()
+    return {"message": "Notification sent successfully"}
+  except Exception as e:
+    raise HTTPException(status_code=500, detail=str(e))
