@@ -23,6 +23,7 @@ def get_article(article_url: str, category:str):
     date_object = datetime.strptime(date, "%B %d, %Y")
     timestamp = date_object.strftime("%Y-%m-%d %H:%M:%S.%f")
 
+    print('Translating Article')
     translated_title = translate.translate_to_ssl(title)
 
     the_article = {

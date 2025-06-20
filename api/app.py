@@ -10,9 +10,9 @@ app = Flask(__name__)
 
 def scrape_website():
   threads = []
+  threads.append(threading.Thread(target=radio_tamazuj.get_articles))
   threads.append(threading.Thread(target=sudanspost.get_articles))
   threads.append(threading.Thread(target=eye_radio.get_articles))
-  threads.append(threading.Thread(target=radio_tamazuj.get_articles))
 
   for thread in threads:
       thread.start()
@@ -28,7 +28,7 @@ def home():
 def scrape():
   try:
     threading.Thread(target=scrape_website).start()
-    return {"message": "Scraping completed successfully"}
+    return {"message": "Scraping triggered successfully"}
   except Exception as e:
     raise HTTPException(status_code=500, detail=str(e))
   
