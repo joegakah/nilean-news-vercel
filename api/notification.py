@@ -1,16 +1,32 @@
 import requests
 import random
 from . import news_db
+import json
 
 def send_notification(title, body, image_url):
-  url = "https://api.neurollect.africa/api/send-notification"
-  data = {
-    "topic": "news_titles",
-    "title": title,
-    "body": body,
-    "image": image_url,
-  }
-  requests.post(url, data=data)
+  try:
+    print('Sending Notification')
+
+    url = "https://api.neurollect.africa/api/send-notification"
+
+    payload = json.dumps({
+      "topic": "news_titles",
+      "title": title,
+      "body": body,
+      "image": image_url
+    })
+    
+    headers = {
+      'Content-Type': 'application/json'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+
+    print(response.text)
+    return response
+
+  except Exception as e:
+    print(e)
 
 def send_today_news():
   try:
