@@ -1,9 +1,11 @@
 import random
 import firebase_admin
-from firebase_admin import credentials, firestore, messaging
+from firebase_admin import credentials, firestore
+from google.cloud.firestore_v1.base_query import FieldFilter
 import json
 import os
 from dotenv import load_dotenv
+
 
 load_dotenv()
 
@@ -71,5 +73,5 @@ def get_todays_news():
     return news_docs
 
 def get_articles_per_source(source: str):
-  articles = news_ref.where('source', '==', source).limit(10).stream()
+  articles = news_ref.where(filter=FieldFilter('source', '==', source)).order_by('publishedAt', direction=firestore.Query.DESCENDING).limit(25).stream()
   return list(articles)

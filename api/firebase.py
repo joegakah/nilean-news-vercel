@@ -80,7 +80,7 @@ def delete_article(article_id: str):
 def delete_duplicates():
   print("Deleting duplicate articles from Firestore...")
 
-  articles = articles_ref.order_by('publishedAt', direction=firestore.Query.DESCENDING).limit(30)
+  articles = articles_ref.order_by('publishedAt', direction=firestore.Query.DESCENDING).limit(100)
   articles = list(articles.stream())
 
   unique_urls = set()
@@ -124,4 +124,3 @@ def get_last_article_id():
         return results[0].to_dict()
     else:
         return None
-    
