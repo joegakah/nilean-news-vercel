@@ -1,9 +1,21 @@
 import firebase_admin
-import random
-
 from firebase_admin import credentials, firestore
+import random
+import json
+import os
+from dotenv import load_dotenv
 
-cred = credentials.Certificate('nilean_var.json')
+load_dotenv()
+
+json_str = os.getenv("FIREBASE_SERVER_KEY")
+
+if not json_str:
+  raise ValueError("Environment variable FIRBASE_SERVER_KEY not found.")
+
+credentials_dict = json.loads(json_str)
+credentials_dict["private_key"] = credentials_dict["private_key"].replace("\\n", "\n")
+cred = credentials.Certificate(credentials_dict)
+
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()

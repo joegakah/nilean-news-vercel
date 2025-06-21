@@ -3,7 +3,7 @@ import random
 from . import news_db
 
 def send_notification(title, body, image_url):
-  url = 'https://nilean-notifications.onrender.com'
+  url = "https://api.neurollect.africa/api/send-notification"
   data = {
     "topic": "news_titles",
     "title": title,

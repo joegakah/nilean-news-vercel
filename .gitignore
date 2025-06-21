@@ -3,3 +3,4 @@ __pycache__/
 venv/
 nilean_var.json
 .vercel
+.env*

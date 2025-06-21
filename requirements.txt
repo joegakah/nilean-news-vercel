@@ -1,4 +1,5 @@
 flask
+dotenv
 eventregistry
 beautifulsoup4
 requests
