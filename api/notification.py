@@ -18,7 +18,7 @@ def send_today_news():
     
     news = random.choice(todays_news)
 
-    print(news)
+    print(news.id)
 
     news = news.to_dict()
     title = news['title_en']

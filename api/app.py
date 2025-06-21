@@ -27,7 +27,9 @@ def home():
 @app.route("/scrape")
 def scrape():
   try:
-    threading.Thread(target=scrape_website).start()
+    sudanspost.get_articles()
+    radio_tamazuj.get_articles()
+    eye_radio.get_articles()
     return {"message": "Scraping triggered successfully"}
   except Exception as e:
     raise HTTPException(status_code=500, detail=str(e))
