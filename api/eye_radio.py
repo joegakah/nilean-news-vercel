@@ -120,6 +120,9 @@ def get_articles():
         articles = soup.find_all('div', class_='more-cat')
         
         print('Getting articles from Eye Radio...')
+
+        eye_radio_articles = news_db.get_articles_per_source('eyeradio.org')
+        existing_urls = {article.to_dict()['url'] for article in eye_radio_articles}
         
         for article in articles:
             article_url = article.find('div', class_='more-cat-title').find('a')['href']
@@ -127,7 +130,7 @@ def get_articles():
             print(f'Article:{article_url}...')
 
             try:
-                if not news_db.check_article(article_url):
+                if not existing_urls or article_url not in existing_urls:
                     get_article(article)
                     print(f"Added Article to Firestore")
 

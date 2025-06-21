@@ -69,3 +69,7 @@ def get_todays_news():
     news_docs = list(news_query.stream())
 
     return news_docs
+
+def get_articles_per_source(source: str):
+  articles = news_ref.where('source', '==', source).limit(10).stream()
+  return list(articles)

@@ -70,13 +70,16 @@ def get_articles():
 
     print('Getting articles from Sudan Post...')
 
+    sudans_post_articles = news_db.get_articles_per_source('sudanspost.com')
+    existing_urls = {article.to_dict()['url'] for article in sudans_post_articles}
+
     for article in articles:
       article_link = article.find('h3', class_='jeg_post_title').find('a')['href']
 
       print(f'Article:{article_link}...')
 
       try:
-        if not news_db.check_article(article_link):
+        if not existing_urls or article_link not in existing_urls:
           category = soup.find('div', class_='jeg_post_category').get_text(strip=True)
           get_article(article_link, category)
 

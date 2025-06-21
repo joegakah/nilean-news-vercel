@@ -44,13 +44,16 @@ def get_articles():
         all_articles = []
         print('Getting articles from Radio Tamazuj...')
 
+        radio_tamazuj_articles = news_db.get_articles_per_source('radiotamazuj.org')
+        existing_urls = {article.to_dict()['url'] for article in radio_tamazuj_articles}
+
         for article in articles:
             article_url = article.find('a', class_='em-figure-link')['href']
 
             try:
                 print(f'Article:{article_url}...')
 
-                if not news_db.check_article(article_url):
+                if not existing_urls or article_url not in existing_urls:
                     title = article.find('h3', class_='article-title-2').get_text(strip=True)
                     image = article.find('img', class_='wp-post-image')['src']
                     date = article.find('span', class_='posts-date').get_text(strip=True)
