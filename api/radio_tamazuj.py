@@ -2,8 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 from markdownify import MarkdownConverter
 from datetime import datetime, timedelta
-import translate
-import news_db
+from . import translate
+from . import news_db
 
 
 def get_article_data(article_url):
@@ -53,7 +53,7 @@ def get_articles():
             try:
                 print(f'Article:{article_url}...')
 
-                if article_url not in existing_urls:
+                if not existing_urls or article_url not in existing_urls:
                     title = article.find('h3', class_='article-title-2').get_text(strip=True)
                     image = article.find('img', class_='wp-post-image')['src']
                     date = article.find('span', class_='posts-date').get_text(strip=True)
