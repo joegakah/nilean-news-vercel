@@ -122,5 +122,3 @@ def get_articles():
         
     else:
         return "Error: Unable to retrieve article links"
-
-get_article("https://www.eyeradio.org/south-sudanese-youth-pledge-digital-peace-combat-hate-speech-online/")

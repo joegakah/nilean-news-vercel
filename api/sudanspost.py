@@ -3,8 +3,8 @@ from bs4 import BeautifulSoup
 from markdownify import MarkdownConverter
 from datetime import datetime, timedelta
 
-from . import news_db
-from . import translate
+import news_db
+import translate
 
 response = requests.get('https://www.sudanspost.com/category/news/')
 
@@ -14,15 +14,27 @@ def get_article(article_url: str, category:str):
   if response.status_code == 200:
     soup = BeautifulSoup(response.text, 'html.parser')
 
-    title = soup.find('h1', class_='jeg_post_title').get_text(strip=True)
-    description = soup.find('h2', class_='jeg_post_subtitle').get_text(strip=True)
-    author = soup.find('div', class_='jeg_meta_author').find('a').get_text(strip=True)
-    image = soup.find('img', class_='size-full').get_attribute_list('src')[0]
+    title = soup.find('meta', property='og:title')['content']
 
-    date =  soup.find('div', class_='jeg_meta_date').get_text(strip=True)
-    date_object = datetime.strptime(date, "%B %d, %Y")
-    timestamp = date_object.strftime("%Y-%m-%d %H:%M:%S.%f")
+    author_tag = soup.find('meta', attrs={'name': 'author'})
+    author = author_tag['content'] if author_tag else None
 
+    publishedAt_tag = soup.find('meta', property='article:published_time')
+    publishedAt = publishedAt_tag['content'] if publishedAt_tag else None
+
+    description_tag = soup.find('meta', property='og:description')
+    description = description_tag['content'] if description_tag else None
+
+    image_tag = soup.find('meta', property='og:image')
+    image = image_tag['content'] if image_tag else None
+
+    print(f"Title: {title}")
+    print(f"Author: {author}")
+    print(f"Published At: {publishedAt}")
+    print(f"Category: {category}")
+    print(f"Description: {description}")
+    print(f"Image URL: {image}")
+    
     print('Translating Article')
     translated_title = translate.translate_to_ssl(title)
 
@@ -36,7 +48,7 @@ def get_article(article_url: str, category:str):
       'category': category,
       'description': description,
       'source': 'sudanspost.com',
-      'publishedAt': timestamp
+      'publishedAt': publishedAt
     }
     
     news_id = news_db.add_news(the_article)
@@ -53,10 +65,10 @@ def get_article(article_url: str, category:str):
 
     the_article_content = {
       'news_id': news_id,
-      'content_en': translated_content['en'],        
+      'content_en': translated_content['en'],
       'content_nus': translated_content['nus'],
       'content_din': translated_content['din'],
-      'publishedAt': timestamp
+      'publishedAt': publishedAt
     }
 
     news_db.add_news_content(the_article_content)
