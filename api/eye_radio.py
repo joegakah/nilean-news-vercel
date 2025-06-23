@@ -4,52 +4,30 @@ from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 from markdownify import MarkdownConverter
 
-from . import news_db
-from . import translate
+import news_db
+import translate
 
-
-def extract_info(text):
-    pattern = r"Author: (.*) \|  Published: (.*)"
-    match = re.match(pattern, text)
-    
-    if match:
-        author = match.group(1).strip()
-        publishedAt = match.group(2).strip()
-        return author, publishedAt
-    else:
-        return None, None
-
-def convert_to_timestamp(publishedAt):
-    now = datetime.now()
-    if "hour" in publishedAt:
-        hours = int(publishedAt.split(" hour")[0])
-        timestamp = now - timedelta(hours=hours)
-
-    elif "min" in publishedAt:
-        minutes = int(publishedAt.split(" min")[0])
-        timestamp = now - timedelta(minutes=minutes)
-
-    elif "day" in publishedAt:
-        days = int(publishedAt.split(" day")[0])
-        timestamp = now - timedelta(days=days)
-
-    else:
-        date_object = datetime.strptime(publishedAt, "%B %d, %Y")
-        timestamp = date_object.strftime("%Y-%m-%d %H:%M:%S.%f")
-
-    return timestamp
-
-def get_article_data(article_url):    
+def get_article(article_url):    
     response = requests.get(article_url)
 
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        title = soup.find('h1', class_='article-title').get_text(strip=True)
-        author_date = soup.find('p', class_='made').get_text(strip=True)
-        author, publishedAt = extract_info(author_date)
-        date = convert_to_timestamp(publishedAt) if publishedAt else ''
-        category = soup.find('a', rel='category tag').get_text(strip=True)
+        title = soup.find('meta', property='og:title')['content']
+        author_tag = soup.find('meta', attrs={'name': 'author'})
+        author = author_tag['content'] if author_tag else None
+
+        publishedAt_tag = soup.find('meta', property='article:published_time')
+        publishedAt = publishedAt_tag['content'] if publishedAt_tag else None
+
+        category_tag = soup.find('a', rel='category tag')
+        category = category_tag.get_text(strip=True) if category_tag else None
+
+        description_tag = soup.find('meta', property='og:description')
+        description = description_tag['content'] if description_tag else None
+
+        image_tag = soup.find('meta', property='og:image')
+        image = image_tag['content'] if image_tag else None
 
         content = soup.find('div', class_='article-pic').contents
         content.remove(soup.find('div', class_='top-article-pic'))
@@ -61,12 +39,41 @@ def get_article_data(article_url):
         converter = MarkdownConverter()
         content_md = converter.convert_soup(content_soup)
 
+        print('Translating Article')
+        translated_title = translate.translate_to_ssl(title)
+        
+        the_article = {
+            'title_en': translated_title['en'],
+            'title_nus': translated_title['nus'],
+            'title_din': translated_title['din'],
+            'author': author,
+            'url': article_url,
+            'imageUrl': image,
+            'description': description,
+            'publishedAt': publishedAt,
+            'category': category,
+            'source': 'eyeradio.org'
+        }
+
+        news_id = news_db.add_news(the_article)
+
         translated_content = translate.translate_to_ssl(content_md)
+
+        the_article_content = {
+            'news_id': news_id,
+            'content_en': translated_content['en'],
+            'content_nus': translated_content['nus'],
+            'content_din': translated_content['din'],
+            'publishedAt': publishedAt,
+        }
+
+        news_db.add_news_content(the_article_content)
+
         
         return {
             'title': title,
-            'content': translated_content,
-            'date': str(date),
+            'content': content_md,
+            'date': str(publishedAt),
             'category': category,
             'author': author,
         }
@@ -80,35 +87,6 @@ def get_article(article):
     image = article.find('div', class_='more-cat-pic').find('img').get_attribute_list('src')[0]
     description = article.find('p', class_='more-cat-copy').get_text(strip=True)
 
-    print('Translating Article')
-    translated_title = translate.translate_to_ssl(title)
-    
-    article_data = get_article_data(article_url)
-    
-    the_article = {
-        'title_en': translated_title['en'],
-        'title_nus': translated_title['nus'],
-        'title_din': translated_title['din'],
-        'author': article_data['author'],
-        'url': article_url,
-        'imageUrl': image,
-        'description': description,
-        'publishedAt': article_data['date'],
-        'category': article_data['category'],
-        'source': 'eyeradio.org'
-    }
-
-    news_id = news_db.add_news(the_article)
-
-    the_article_content = {
-        'news_id': news_id,
-        'content_en': article_data['content']['en'],
-        'content_nus': article_data['content']['nus'],
-        'content_din': article_data['content']['din'],
-        'publishedAt': article_data['date'],
-    }
-
-    news_db.add_news_content(the_article_content)
                     
 def get_articles(): 
     url = 'https://www.eyeradio.org/category/news/'
@@ -144,3 +122,5 @@ def get_articles():
         
     else:
         return "Error: Unable to retrieve article links"
+
+get_article("https://www.eyeradio.org/south-sudanese-youth-pledge-digital-peace-combat-hate-speech-online/")
