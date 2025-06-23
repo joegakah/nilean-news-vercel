@@ -28,13 +28,6 @@ def get_article(article_url: str, category:str):
     image_tag = soup.find('meta', property='og:image')
     image = image_tag['content'] if image_tag else None
 
-    print(f"Title: {title}")
-    print(f"Author: {author}")
-    print(f"Published At: {publishedAt}")
-    print(f"Category: {category}")
-    print(f"Description: {description}")
-    print(f"Image URL: {image}")
-    
     print('Translating Article')
     translated_title = translate.translate_to_ssl(title)
 
