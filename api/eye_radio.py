@@ -134,6 +134,8 @@ def get_articles():
                     get_article(article)
                     print(f"Added Article to Firestore")
 
+                    existing_urls.add(article_url)
+
                 else:
                     print(f"Article already exists in Firestore")
 
@@ -142,5 +144,3 @@ def get_articles():
         
     else:
         return "Error: Unable to retrieve article links"
-
-get_articles()
