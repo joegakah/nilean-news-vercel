@@ -102,7 +102,7 @@ def get_articles():
 
             try:
                 if not existing_urls or article_url not in existing_urls:
-                    get_article(article)
+                    get_article(article_url)
                     print(f"Added Article to Firestore")
 
                     existing_urls.add(article_url)
