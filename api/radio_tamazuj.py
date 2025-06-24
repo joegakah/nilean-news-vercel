@@ -82,6 +82,8 @@ def get_articles():
         for article in articles:
             article_url = article.find('a', class_='em-figure-link')['href']
 
+            print(f'Article:{article_link}...')
+            
             try:
                 if not existing_urls or article_url not in existing_urls:
                     get_article(article)
