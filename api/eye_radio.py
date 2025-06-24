@@ -4,8 +4,8 @@ from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 from markdownify import MarkdownConverter
 
-import news_db
-import translate
+from . import news_db
+from . import translate
 
 def get_article(article_url):    
     response = requests.get(article_url)

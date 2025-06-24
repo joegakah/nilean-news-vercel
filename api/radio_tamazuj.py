@@ -97,5 +97,3 @@ def get_articles():
         
     else:
         return "Error: Unable to retrieve article links"
-
-get_article("https://www.radiotamazuj.org/en/news/article/legal-system-favors-rich-in-northern-bahr-el-ghazal-locals-complain")
