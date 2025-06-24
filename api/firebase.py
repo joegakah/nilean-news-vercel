@@ -1,9 +1,21 @@
 import firebase_admin
+from firebase_admin import credentials, firestore
 import random
+import json
+import os
+from dotenv import load_dotenv
 
-from firebase_admin import credentials, firestore, messaging
+load_dotenv()
 
-cred = credentials.Certificate('buai-92c2a-160af8a5b9d7.json')
+json_str = os.getenv("FIREBASE_SERVER_KEY")
+
+if not json_str:
+  raise ValueError("Environment variable FIRBASE_SERVER_KEY not found.")
+
+credentials_dict = json.loads(json_str)
+credentials_dict["private_key"] = credentials_dict["private_key"].replace("\\n", "\n")
+cred = credentials.Certificate(credentials_dict)
+
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
@@ -28,7 +40,7 @@ def add_news(news: dict):
 
 def check_article(article_url: str):
   print("Checking News Article ...")
-  news = news_ref.order_by('publishedAt', direction=firestore.Query.DESCENDING)
+  news = news_ref.order_by('publishedAt', direction=firestore.Query.DESCENDING).limit(25)
   news = list(news.stream())
 
   for doc in news:
@@ -42,6 +54,9 @@ def check_article(article_url: str):
 def add_to_breaking_news():
   articles = articles_ref.stream()
   random_articles = random.sample(list(articles), 5)
+  breaking_news = db.collection('breaking_news')
+  breaking_news.delete()
+  
   for doc in random_articles:
     db.collection('breaking_news').document(doc.id).set(doc.to_dict())
 
@@ -65,7 +80,7 @@ def delete_article(article_id: str):
 def delete_duplicates():
   print("Deleting duplicate articles from Firestore...")
 
-  articles = articles_ref.order_by('publishedAt', direction=firestore.Query.DESCENDING)
+  articles = articles_ref.order_by('publishedAt', direction=firestore.Query.DESCENDING).limit(100)
   articles = list(articles.stream())
 
   unique_urls = set()
@@ -109,4 +124,3 @@ def get_last_article_id():
         return results[0].to_dict()
     else:
         return None
-    

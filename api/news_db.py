@@ -1,9 +1,23 @@
 import random
-import datetime
 import firebase_admin
-from firebase_admin import credentials, firestore, messaging
+from firebase_admin import credentials, firestore
+from google.cloud.firestore_v1.base_query import FieldFilter
+import json
+import os
+from dotenv import load_dotenv
 
-cred = credentials.Certificate('buai-92c2a-160af8a5b9d7.json')
+
+load_dotenv()
+
+json_str = os.getenv("FIREBASE_SERVER_KEY")
+
+if not json_str:
+  raise ValueError("Environment variable FIRBASE_SERVER_KEY not found.")
+
+credentials_dict = json.loads(json_str)
+credentials_dict["private_key"] = credentials_dict["private_key"].replace("\\n", "\n")
+cred = credentials.Certificate(credentials_dict)
+
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
@@ -57,3 +71,7 @@ def get_todays_news():
     news_docs = list(news_query.stream())
 
     return news_docs
+
+def get_articles_per_source(source: str):
+  articles = news_ref.where(filter=FieldFilter('source', '==', source)).order_by('publishedAt', direction=firestore.Query.DESCENDING).limit(25).stream()
+  return list(articles)

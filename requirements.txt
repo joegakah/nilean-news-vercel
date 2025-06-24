@@ -1,3 +1,5 @@
+flask
+dotenv
 eventregistry
 beautifulsoup4
 requests
@@ -6,6 +8,4 @@ cloudscraper
 cfscrape
 dateparser
 firebase_admin
-fastapi 
-uvicorn
 schedule

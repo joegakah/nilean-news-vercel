@@ -1,18 +1,18 @@
-import notification
-import radio_tamazuj
-import eye_radio
 import threading
-from fastapi import FastAPI, HTTPException
+from http.client import HTTPException
+from flask import Flask
+from . import notification
+from . import radio_tamazuj
+from . import eye_radio
+from . import sudanspost
 
-import sudanspost
-
-app = FastAPI()
+app = Flask(__name__)
 
 def scrape_website():
   threads = []
+  threads.append(threading.Thread(target=radio_tamazuj.get_articles))
   threads.append(threading.Thread(target=sudanspost.get_articles))
   threads.append(threading.Thread(target=eye_radio.get_articles))
-  threads.append(threading.Thread(target=radio_tamazuj.get_articles))
 
   for thread in threads:
       thread.start()
@@ -20,15 +20,17 @@ def scrape_website():
   for thread in threads:
       thread.join()
    
-@app.get("/")
+@app.route("/")
 def home():
   return {"message": "Welcome to the Web Scraping API"}
 
-@app.get("/scrape")
+@app.route("/scrape")
 def scrape():
   try:
-    threading.Thread(target=scrape_website).start()
-    return {"message": "Scraping completed successfully"}
+    sudanspost.get_articles()
+    radio_tamazuj.get_articles()
+    eye_radio.get_articles()
+    return {"message": "Scraping triggered successfully"}
   except Exception as e:
     raise HTTPException(status_code=500, detail=str(e))
   
