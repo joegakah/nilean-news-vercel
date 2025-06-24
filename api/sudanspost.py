@@ -88,6 +88,8 @@ def get_articles():
           category = soup.find('div', class_='jeg_post_category').get_text(strip=True)
           get_article(article_link, category)
 
+          existing_urls.add(article_link)
+
         else:
           print(f"Article already exists in Firestore")
 
