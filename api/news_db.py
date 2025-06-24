@@ -6,7 +6,6 @@ import json
 import os
 from dotenv import load_dotenv
 
-
 load_dotenv()
 
 json_str = os.getenv("FIREBASE_SERVER_KEY")

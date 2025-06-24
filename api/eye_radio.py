@@ -80,13 +80,6 @@ def get_article(article_url):
     
     else:
         return "Error: Unable to retrieve article data"
-    
-def get_article(article):
-    article_url = article.find('div', class_='more-cat-title').find('a')['href']
-    title = article.find('h1', class_='cat-title-4').get_text(strip=True)
-    image = article.find('div', class_='more-cat-pic').find('img').get_attribute_list('src')[0]
-    description = article.find('p', class_='more-cat-copy').get_text(strip=True)
-
                     
 def get_articles(): 
     url = 'https://www.eyeradio.org/category/news/'

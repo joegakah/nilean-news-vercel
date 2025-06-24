@@ -39,7 +39,7 @@ def get_article(article_url):
             'author': author,
             'category': category,
             'description': description,
-            'source': 'sudanspost.com',
+            'source': 'radiotamazuj.org',
             'publishedAt': publishedAt
         }
         
