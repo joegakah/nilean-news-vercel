@@ -124,3 +124,14 @@ def get_last_article_id():
         return results[0].to_dict()
     else:
         return None
+    
+def delete_where_no_content():
+  articles = articles_ref.order_by('publishedAt', direction=firestore.Query.DESCENDING).limit(50)
+  articles = list(articles.stream())
+
+  for article in articles:
+    news_content_doc = news_content_ref.document(article.id)
+    if not news_content_doc.get().exists:
+      print(f'Deleting Article: {article.id} because no corresponding document exists in news_content collection')
+      doc_ref = articles_ref.document(article.id)
+      doc_ref.delete()
